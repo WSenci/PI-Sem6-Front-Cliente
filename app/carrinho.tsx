@@ -39,7 +39,7 @@ export default function CartScreen() {
     <View style={styles.container}>
       {/* Sidebar */}
       <View style={styles.sidebar}>
-        <TouchableOpacity style={styles.homeButton} onPress={() => { router.navigate("/") }}>
+        <TouchableOpacity style={styles.homeButton} onPress={() => { router.navigate("/cardapio") }}>
           <Text style={styles.homeButtonText}>Voltar</Text>
         </TouchableOpacity>
       </View>

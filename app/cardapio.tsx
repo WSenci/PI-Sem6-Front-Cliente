@@ -39,9 +39,6 @@ export default function CardapioScreen({ navigation }) {
             <Text style={styles.menuText}>{category.title}</Text>
           </TouchableOpacity>
         ))}
-        <TouchableOpacity style={styles.homeButton} onPress={() => { router.navigate("/") }}>
-          <Text style={styles.homeButtonText}>Voltar</Text>
-        </TouchableOpacity>
       </View>
       
       {/* Content */}
@@ -80,13 +77,16 @@ export default function CardapioScreen({ navigation }) {
           <Text style={styles.placeholder}>Selecione uma categoria</Text>
         )}
       </View>
+      <TouchableOpacity style={styles.cartButton} onPress={() => { router.navigate("/carrinho") }}>
+        <Text style={styles.cartButtonText}>Carrinho</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, flexDirection: 'row' },
-  sidebar: { width: 100, backgroundColor: '#333', paddingVertical: 20, justifyContent: 'space-between', alignItems: 'center' },
+  sidebar: { width: 150, backgroundColor: '#333', paddingVertical: 10, justifyContent: 'space-around', alignItems: 'center' },
   menuButton: { padding: 15 },
   menuButtonActive: { backgroundColor: '#555' },
   menuText: { color: 'white', textAlign: 'center' },
@@ -105,5 +105,7 @@ const styles = StyleSheet.create({
   itemPrice: { fontSize: 16, fontWeight: 'bold', color: '#27ae60', marginTop: 5 },
   addButton: { marginTop: 10, backgroundColor: '#27ae60', padding: 10, borderRadius: 5 },
   addButtonText: { color: 'white', fontWeight: 'bold' },
-  placeholder: { fontSize: 18, fontStyle: 'italic', color: '#888', textAlign: 'center' }
+  placeholder: { fontSize: 18, fontStyle: 'italic', color: '#888', textAlign: 'center' },
+  cartButton: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#f39c12', paddingVertical: 15, paddingHorizontal: 20, borderRadius: 50, elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 3 },
+  cartButtonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
 });

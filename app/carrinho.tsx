@@ -1,6 +1,17 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Image, BackHandler } from 'react-native';
+
+
+//Bloqueia o botão de voltar do android para que o usuario não volte para a tela de seleção de mesa
+useEffect(() => {
+  const backHandler = BackHandler.addEventListener(
+    'hardwareBackPress',
+    () => true // Retorna true para bloquear
+  );
+  return () => backHandler.remove(); // Remove quando desmontar
+}, []);
+
 
 // Estrutura para os itens do carrinho (exemplo)
 const initialCartItems = [

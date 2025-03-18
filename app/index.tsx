@@ -13,7 +13,7 @@ export default function App() {
     }
     // Aqui você pode salvar o número da mesa globalmente se quiser
     console.log('Número da mesa:', numeroMesa);
-    router.navigate('/cardapio');
+    router.replace('/cardapio');
   };
 
   return (

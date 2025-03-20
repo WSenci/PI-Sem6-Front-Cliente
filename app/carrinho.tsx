@@ -1,6 +1,16 @@
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, Image, BackHandler } from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
+
+
+// Função para travar a tela em orientação horizontal
+   useEffect(() => {
+    const lockOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    };
+    lockOrientation();
+  }, []);
 
 
 //Bloqueia o botão de voltar do android para que o usuario não volte para a tela de seleção de mesa

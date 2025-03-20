@@ -1,10 +1,20 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View, TextInput, Alert } from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
+
 
 export default function App() {
   const [numeroMesa, setNumeroMesa] = useState('');
+
+   // Função para travar a tela em orientação horizontal
+   useEffect(() => {
+    const lockOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    };
+    lockOrientation();
+  }, []);
 
   const iniciarPedido = () => {
     if (numeroMesa.trim() === '') {

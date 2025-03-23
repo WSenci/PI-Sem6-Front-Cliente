@@ -1,8 +1,17 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import { useEffect } from "react";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 export default function App() {
+  useEffect(() => {
+    async function changeScreenOrientation() {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    }
+    changeScreenOrientation();
+}, []);
+
   return (
     <View style={styles.container}>
       <Text>APP PI 6º SEMESTRE ADS - CLIENTE</Text>
@@ -16,7 +25,7 @@ export default function App() {
         title="Carrinho"
         color="#841584"
       />
-      <StatusBar style="auto" />
+      <StatusBar style='light' />
     </View>
   );
 }

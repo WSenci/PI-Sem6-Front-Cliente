@@ -59,7 +59,8 @@ const styles = StyleSheet.create({
         alignSelf: "flex-end",
     },
     card: {
-        width: 150,
+        width: 180,
+        height: 150,
         backgroundColor: "#fff",
         padding: 10,
         borderRadius: 10,
@@ -68,8 +69,8 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     image: {
-        width: 100,
-        height: 100,
+        width: 70,
+        height: 70,
         borderRadius: 10,
     },
     name: {

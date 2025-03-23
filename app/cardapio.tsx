@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator, StyleSheet, StatusBar } from "react-native";
+import { View, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, Text, ScrollView } from "react-native";
 import api from "../helpers/axios";
 import ItemCard from "../components/itemCard/itemCard";
+import { StatusBar } from 'expo-status-bar';
 
 interface IProduto {
   _id: string;
@@ -12,13 +13,10 @@ interface IProduto {
   desc: string;
 }
 
-// type MenuScreenProps = {
-//   items: MenuItem[];
-// };
-
 export default function MenuScreen() {
   const [itens, setItens] = useState<IProduto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchCardapio() {
@@ -39,26 +37,62 @@ export default function MenuScreen() {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
+  const itensFiltrados = tipoSelecionado
+    ? itens.filter((item) => item.tipo === tipoSelecionado)
+    : itens;
+
   return (
     <View style={styles.container}>
+      <View style={styles.sidebar}>
+        {["Lanche", "Bebida", "Acompanhamento"].map((tipo) => (
+          <TouchableOpacity key={tipo} onPress={() => setTipoSelecionado(tipo)} style={styles.filterButton}>
+            <Text style={styles.filterText}>{tipo}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <ScrollView horizontal>
         <FlatList
-          data={itens}
+          data={itensFiltrados}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => <ItemCard item={item} />}
           numColumns={2}
           contentContainerStyle={styles.list}
         />
-      </View>
-      );
+      </ScrollView>
+
+      <StatusBar style='light' />
+    </View>
+  );
 }
 
-      const styles = StyleSheet.create({
-        container: {
-        flex: 1,
-      backgroundColor: "#f8f8f8",
-      padding: 10,
-    },
-      list: {
-        justifyContent: "center",
-    },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#f8f8f8",
+  }, sidebar: {
+    width: 190,
+    backgroundColor: "#7d7d7d",
+    paddingVertical: 20,
+    alignItems: "center",
+  },
+  filterButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    marginVertical: 5,
+    backgroundColor: "#7d7d7d",
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+  filterText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+  },
+  list: {
+    padding: 5,
+    flexDirection: "row",
+  },
 });

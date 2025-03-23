@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal, TextInput, Button, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, TouchableOpacity, Modal, TextInput, Button, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { OrientationLocker, LANDSCAPE } from 'react-native-orientation-locker';
 
 type ItemCardProps = {
     item: {
@@ -13,6 +14,7 @@ type ItemCardProps = {
 };
 
 export default function ItemCard({ item }: ItemCardProps) {
+
     const [modalVisible, setModalVisible] = useState(false);
     const [observacao, setObservacao] = useState("");
 
@@ -24,27 +26,38 @@ export default function ItemCard({ item }: ItemCardProps) {
                 <Text style={styles.price}>R$ {item.preco.toFixed(2)}</Text>
             </TouchableOpacity>
 
-            <Modal visible={modalVisible} animationType="slide" transparent={true}>
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>{item.nome}</Text>
-                        <Text style={styles.modalDescription}>{item.desc}</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Alguma observação?"
-                            value={observacao}
-                            onChangeText={setObservacao}
-                        />
-                        <Button title="Adicionar ao pedido" onPress={() => setModalVisible(false)} />
-                        <Button title="Fechar" onPress={() => setModalVisible(false)} color="red" />
+            <Modal visible={modalVisible} animationType="fade" transparent={true} >
+                <TouchableWithoutFeedback onPress={() => setModalVisible(false)} >
+                    <View style={styles.modalContainer} >
+                        <TouchableWithoutFeedback onPress={() => { }} >
+                            <View style={styles.modalContent}>
+                                <View style={styles.button}>
+                                    <Button title=" X " onPress={() => setModalVisible(false)} color="red" />
+                                </View>
+                                <Image source={{ uri: item.image }} style={styles.image} />
+                                <Text style={styles.modalTitle}>{item.nome}</Text>
+                                <Text style={styles.modalDescription}>{item.desc}</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Alguma observação?"
+                                    value={observacao}
+                                    onChangeText={setObservacao}
+                                />
+                                <Text style={styles.modalPrice}>R$ {item.preco.toFixed(2)}</Text>
+                                <Button title="Adicionar" onPress={() => setModalVisible(false)} color={"green"} />
+                            </View>
+                        </TouchableWithoutFeedback>
                     </View>
-                </View>
-            </Modal>
-        </View>
+                </TouchableWithoutFeedback>
+            </Modal >
+        </View >
     );
 }
 
 const styles = StyleSheet.create({
+    button: {
+        alignSelf: "flex-end",
+    },
     card: {
         width: 150,
         backgroundColor: "#fff",
@@ -83,21 +96,27 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     modalTitle: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: "bold",
     },
     modalDescription: {
-        fontSize: 14,
+        fontSize: 19,
         marginVertical: 10,
         textAlign: "center",
     },
     input: {
         width: "100%",
-        height: 40,
+        height: 45,
+        fontSize: 15,
         borderColor: "#ccc",
         borderWidth: 1,
         borderRadius: 5,
         paddingHorizontal: 10,
+        marginBottom: 6,
+    },
+    modalPrice: {
+        fontSize: 16,
+        color: "green",
         marginBottom: 10,
     },
 });

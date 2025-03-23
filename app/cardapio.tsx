@@ -1,60 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
-import api from "axios";
+import { View, FlatList, ActivityIndicator, StyleSheet, StatusBar } from "react-native";
+import api from "../helpers/axios";
 import ItemCard from "../components/itemCard/itemCard";
 
 interface IProduto {
-    _id: string;
-    image: string;
-    nome: string;
-    preco: number;
-    tipo: string;
-    desc: string;
+  _id: string;
+  image: string;
+  nome: string;
+  preco: number;
+  tipo: string;
+  desc: string;
 }
+
+// type MenuScreenProps = {
+//   items: MenuItem[];
+// };
 
 export default function MenuScreen() {
-    const [itens, setItens] = useState<IProduto[]>([]);
-    const [loading, setLoading] = useState(true);
+  const [itens, setItens] = useState<IProduto[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchCardapio() {
-            try {
-                const response = await api.get("/product");
-                setItens(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar cardápio:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchCardapio();
-    }, []);
-
-    if (loading) {
-        return <ActivityIndicator size="large" color="#0000ff" />;
+  useEffect(() => {
+    async function fetchCardapio() {
+      try {
+        const response = await api.get("/product");
+        setItens(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar cardápio:", error);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    return (
-        <View style={styles.container}>
-            <FlatList
-                data={itens}
-                keyExtractor={(item) => item._id}
-                renderItem={({ item }) => <ItemCard item={item} />}
-                numColumns={2}
-                contentContainerStyle={styles.list}
-            />
-        </View>
-    );
+    fetchCardapio();
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  return (
+    <View style={styles.container}>
+        <FlatList
+          data={itens}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => <ItemCard item={item} />}
+          numColumns={2}
+          contentContainerStyle={styles.list}
+        />
+      </View>
+      );
 }
 
-const styles = StyleSheet.create({
-    container: {
+      const styles = StyleSheet.create({
+        container: {
         flex: 1,
-        backgroundColor: "#f8f8f8",
-        padding: 10,
+      backgroundColor: "#f8f8f8",
+      padding: 10,
     },
-    list: {
+      list: {
         justifyContent: "center",
     },
 });

@@ -5,7 +5,30 @@ const uri = Constants.expoConfig?.hostUri ? `http://${Constants.expoConfig?.host
 
 const api = axios.create({
     baseURL: uri,
-    timeout: 2000
+    timeout: 2000,
+    headers: {
+        'Content-Type': 'application/json',
+    }
 });
+
+// Interceptor de requisição
+api.interceptors.request.use(
+    (config) => {
+        // Adicione cabeçalhos ou faça outras configurações aqui
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// Interceptor de resposta
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        console.error('Erro de API:', error);
+        return Promise.reject(error);
+    }
+);
 
 export default api;

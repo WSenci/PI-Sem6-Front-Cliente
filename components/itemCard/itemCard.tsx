@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, Modal, TextInput, Button, StyleSheet, TouchableWithoutFeedback } from "react-native";
-import { OrientationLocker, LANDSCAPE } from 'react-native-orientation-locker';
 
 type ItemCardProps = {
     item: {

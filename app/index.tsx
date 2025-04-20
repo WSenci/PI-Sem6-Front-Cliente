@@ -2,8 +2,7 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View, Platform } from 'react-native';
 import { useEffect, useState } from "react";
-// import { useCameraDevices, Camera, useCameraDevice } from 'react-native-vision-camera'
-// import { useScanBarcodes, BarcodeFormat } from 'vision-camera-code-scanner';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ScreenOrientation from "expo-screen-orientation";
 
 export default function App() {
@@ -18,9 +17,26 @@ export default function App() {
   // ctrl + k c -> comentar
   // ctrl + k u -> descomentar
 
-  const [permission, setPermission] = useState(false)
-  // const devices = useCameraDevices()
-  // const device = devices
+  const [scanned, setScanned] = useState(false)
+  const [perm, reqPerm] = useCameraPermissions()
+
+  useEffect(()=> {
+    reqPerm()
+  }, [])
+
+  const handledQRCodeScanned = ({data}: any) => {
+    setScanned(true)
+    router.navigate("/cardapio")
+    console.log(`${data}`)
+  }
+
+  if(!perm?.granted){
+    return(
+      <View>
+        <Text>Permissão da câmera não concedida.</Text>
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -37,7 +53,20 @@ export default function App() {
       />
 
       <View>
-        qr-code
+        <CameraView style={styles.camera}
+        onBarcodeScanned={scanned ? undefined : handledQRCodeScanned}
+        barcodeScannerSettings={{
+          barcodeTypes: ['qr'],
+        }}
+        facing='front'
+        />
+        {
+          scanned && (
+            <Text style={styles.rescan} onPress={()=> setScanned(false)}>
+              Toque para escanear novamente.
+            </Text>
+          )
+        }
       </View>
 
       <StatusBar style='light' />
@@ -52,4 +81,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  camera:{
+    width: 200,
+    height: 200
+  },
+  rescan:{
+    margin: 20,
+    textAlign: 'center',
+    color: 'blue',
+  }
 });

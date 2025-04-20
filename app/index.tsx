@@ -1,17 +1,19 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View, Platform } from 'react-native';
 import { useEffect, useState } from "react";
 // import { useCameraDevices, Camera, useCameraDevice } from 'react-native-vision-camera'
 // import { useScanBarcodes, BarcodeFormat } from 'vision-camera-code-scanner';
 import * as ScreenOrientation from "expo-screen-orientation";
 
 export default function App() {
-    useEffect(() => {
-      async function changeScreenOrientation() {
-          await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+  useEffect(() => {
+    async function changeScreenOrientation() {
+      if (Platform.OS !== 'web') {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
       }
-      changeScreenOrientation();
+    }
+    changeScreenOrientation();
   }, []);
   // ctrl + k c -> comentar
   // ctrl + k u -> descomentar

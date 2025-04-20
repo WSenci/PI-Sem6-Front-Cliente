@@ -24,9 +24,9 @@ export default function App() {
     reqPerm()
   }, [])
 
-  const handledQRCodeScanned = ({data}: any) => {
+  const handledQRCodeScanned = ({data}: {data: string}) => {
     setScanned(true)
-    router.navigate("/cardapio")
+    router.navigate({pathname: "/cardapio", params: {qrData: data}})
     console.log(`${data}`)
   }
 

@@ -3,6 +3,7 @@ import { View, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, Text, 
 import api from "../helpers/axios";
 import ItemCard from "../components/itemCard/itemCard";
 import { StatusBar } from 'expo-status-bar';
+import { useLocalSearchParams } from "expo-router";
 
 interface IProduto {
   _id: string;
@@ -14,23 +15,27 @@ interface IProduto {
 }
 
 export default function MenuScreen() {
-  const [itens, setItens] = useState<IProduto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null);
+  const [itens, setItens] = useState<IProduto[]>([])
+  const [loading, setLoading] = useState(true)
+  const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null)
+  
+  const params = useLocalSearchParams()
+  const qrData = params.qrData
+
 
   useEffect(() => {
     async function fetchCardapio() {
       try {
-        const response = await api.get("/product");
-        setItens(response.data);
+        const response = await api.get("/product")
+        setItens(response.data)
       } catch (error) {
-        console.error("Erro ao buscar cardápio:", error);
+        console.error("Erro ao buscar cardápio:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    fetchCardapio();
+    fetchCardapio()
   }, []);
 
   if (loading) {
@@ -43,7 +48,7 @@ export default function MenuScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.sidebar}>
+      <View style={styles.sidebar}><Text style={styles.comandaText}>Comanda: {qrData}</Text>
         {["Lanche", "Bebida", "Acompanhamento"].map((tipo) => (
           <TouchableOpacity key={tipo} onPress={() => setTipoSelecionado(tipo)} style={styles.filterButton}>
             <Text style={styles.filterText}>{tipo}</Text>
@@ -87,6 +92,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   filterText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+  },
+  comandaText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "white",

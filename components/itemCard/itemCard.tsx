@@ -1,3 +1,4 @@
+import { Double } from "mongodb";
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, Modal, TextInput, Button, StyleSheet, TouchableWithoutFeedback } from "react-native";
 

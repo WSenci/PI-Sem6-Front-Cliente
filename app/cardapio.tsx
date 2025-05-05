@@ -4,20 +4,22 @@ import api from "../helpers/axios";
 import ItemCard from "../components/itemCard/itemCard";
 import { StatusBar } from 'expo-status-bar';
 import { useLocalSearchParams } from "expo-router";
-
-interface IProduto {
-  _id: string;
-  image: string;
-  nome: string;
-  preco: number;
-  tipo: string;
-  desc: string;
-}
+import { IProduto, IProdutoInter } from "../components/interfaces/interfaces";
 
 export default function MenuScreen() {
   const [itens, setItens] = useState<IProduto[]>([])
   const [loading, setLoading] = useState(true)
   const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null)
+
+  const [pedido, setPedido] = useState<IProdutoInter[]>([{
+    _id: '',
+    image: '',
+    nome: '',
+    preco: 0,
+    tipo: '',
+    desc: '',
+    comment: '',
+}])
   
   const params = useLocalSearchParams()
   const qrData = params.qrData

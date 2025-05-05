@@ -1,22 +1,29 @@
 import { Double } from "mongodb";
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, Modal, TextInput, Button, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { IProdutoInter } from "../interfaces/interfaces";
 
 type ItemCardProps = {
     item: {
         _id: string;
-        image: string;
+        img: string;
         nome: string;
         preco: number;
         tipo: string;
         desc: string;
+        comment?: string;
     };
 };
 
-export default function ItemCard({ item }: ItemCardProps) {
+export default function ItemCard({ item }: ItemCardProps, produto: IProdutoInter ) {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [observacao, setObservacao] = useState("");
+
+    const handleAddItem = ({item}: {item}: IProdutoCom) => {
+        setPedido(item)
+
+    }
 
     return (
         <View style={styles.card}>

@@ -3,6 +3,7 @@ import { View, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, Text, 
 import api from "../helpers/axios";
 import ItemCard from "../components/itemCard/itemCard";
 import { StatusBar } from 'expo-status-bar';
+import { router } from "expo-router";
 
 interface IProduto {
   _id: string;
@@ -49,6 +50,9 @@ export default function MenuScreen() {
             <Text style={styles.filterText}>{tipo}</Text>
           </TouchableOpacity>
         ))}
+        <TouchableOpacity onPress={() => { router.navigate("/chatbot") }} style={styles.filterButton}>
+          <Text style={styles.filterText}>Tempo de preparo</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView horizontal>

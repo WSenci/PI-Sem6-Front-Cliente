@@ -50,7 +50,7 @@ export default function MenuScreen() {
             <Text style={styles.filterText}>{tipo}</Text>
           </TouchableOpacity>
         ))}
-        <TouchableOpacity onPress={() => { router.navigate("/chatbot") }}>
+        <TouchableOpacity onPress={() => { router.navigate("/chatbot") }} style={styles.filterButton}>
           <Text style={styles.filterText}>Tempo de preparo</Text>
         </TouchableOpacity>
       </View>

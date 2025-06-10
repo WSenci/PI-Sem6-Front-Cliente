@@ -5,7 +5,7 @@ import { View, Text, Image, TouchableOpacity, Modal, TextInput, Button, StyleShe
 type ItemCardProps = {
     item: {
         _id: string;
-        image: string;
+        img: string;
         nome: string;
         preco: number;
         tipo: string;
@@ -13,15 +13,30 @@ type ItemCardProps = {
     };
 };
 
+function convertDriveLinkToDirect(url?: string): string {
+    if (!url) return '';
+    const match = url.match(/\/file\/d\/([^/]+)\//);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    return url;
+  }
+
 export default function ItemCard({ item }: ItemCardProps) {
+
+    const imageUrl = convertDriveLinkToDirect(item.img);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [observacao, setObservacao] = useState("");
 
     return (
         <View style={styles.card}>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Image source={{ uri: item.image }} style={styles.image} />
+            <TouchableOpacity onPress={() => {setModalVisible(true)}}>
+            {imageUrl ? (
+        <Image source={{ uri: imageUrl }} style={styles.image} />
+      ) : (
+        <Text>Imagem não disponível</Text>
+      )}
                 <Text style={styles.name}>{item.nome}</Text>
                 <Text style={styles.price}>R$ {item.preco.toFixed(2)}</Text>
             </TouchableOpacity>
@@ -34,7 +49,11 @@ export default function ItemCard({ item }: ItemCardProps) {
                                 <View style={styles.button}>
                                     <Button title=" X " onPress={() => setModalVisible(false)} color="red" />
                                 </View>
-                                <Image source={{ uri: item.image }} style={styles.image} />
+                                {imageUrl ? (
+        <Image source={{ uri: imageUrl }} style={styles.image} />
+      ) : (
+        <Text>Imagem não disponível</Text>
+      )}
                                 <Text style={styles.modalTitle}>{item.nome}</Text>
                                 <Text style={styles.modalDescription}>{item.desc}</Text>
                                 <TextInput

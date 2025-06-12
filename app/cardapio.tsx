@@ -7,7 +7,7 @@ import { router } from "expo-router";
 
 interface IProduto {
   _id: string;
-  image: string;
+  img: string;
   nome: string;
   preco: number;
   tipo: string;

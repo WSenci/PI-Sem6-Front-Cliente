@@ -17,10 +17,10 @@ function convertDriveLinkToDirect(url?: string): string {
     if (!url) return '';
     const match = url.match(/\/file\/d\/([^/]+)\//);
     if (match && match[1]) {
-      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        return `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     return url;
-  }
+}
 
 export default function ItemCard({ item }: ItemCardProps) {
 
@@ -30,46 +30,48 @@ export default function ItemCard({ item }: ItemCardProps) {
     const [observacao, setObservacao] = useState("");
 
     return (
-        <View style={styles.card}>
-            <TouchableOpacity onPress={() => {setModalVisible(true)}}>
-            {imageUrl ? (
-        <Image source={{ uri: imageUrl }} style={styles.image} />
-      ) : (
-        <Text>Imagem não disponível</Text>
-      )}
+        <TouchableOpacity onPress={() => { setModalVisible(true) }}>
+            <View style={styles.card}>
+                {/* <TouchableOpacity onPress={() => { setModalVisible(true) }}> */}
+                {imageUrl ? (
+                    <Image source={{ uri: imageUrl }} style={styles.image} />
+                ) : (
+                    <Text>Imagem não disponível</Text>
+                )}
                 <Text style={styles.name}>{item.nome}</Text>
                 <Text style={styles.price}>R$ {item.preco.toFixed(2)}</Text>
-            </TouchableOpacity>
+                {/* </TouchableOpacity> */}
 
-            <Modal visible={modalVisible} animationType="fade" transparent={true} >
-                <TouchableWithoutFeedback onPress={() => setModalVisible(false)} >
-                    <View style={styles.modalContainer} >
-                        <TouchableWithoutFeedback onPress={() => { }} >
-                            <View style={styles.modalContent}>
-                                <View style={styles.button}>
-                                    <Button title=" X " onPress={() => setModalVisible(false)} color="red" />
+                <Modal visible={modalVisible} animationType="fade" transparent={true} >
+                    <TouchableWithoutFeedback onPress={() => setModalVisible(false)} >
+                        <View style={styles.modalContainer} >
+                            <TouchableWithoutFeedback onPress={() => { }} >
+                                <View style={styles.modalContent}>
+                                    <View style={styles.button}>
+                                        <Button title=" X " onPress={() => setModalVisible(false)} color="red" />
+                                    </View>
+                                    {imageUrl ? (
+                                        <Image source={{ uri: imageUrl }} style={styles.image} />
+                                    ) : (
+                                        <Text>Imagem não disponível</Text>
+                                    )}
+                                    <Text style={styles.modalTitle}>{item.nome}</Text>
+                                    <Text style={styles.modalDescription}>{item.desc}</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="Alguma observação?"
+                                        value={observacao}
+                                        onChangeText={setObservacao}
+                                    />
+                                    <Text style={styles.modalPrice}>R$ {item.preco.toFixed(2)}</Text>
+                                    <Button title="Adicionar" onPress={() => setModalVisible(false)} color={"green"} />
                                 </View>
-                                {imageUrl ? (
-        <Image source={{ uri: imageUrl }} style={styles.image} />
-      ) : (
-        <Text>Imagem não disponível</Text>
-      )}
-                                <Text style={styles.modalTitle}>{item.nome}</Text>
-                                <Text style={styles.modalDescription}>{item.desc}</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Alguma observação?"
-                                    value={observacao}
-                                    onChangeText={setObservacao}
-                                />
-                                <Text style={styles.modalPrice}>R$ {item.preco.toFixed(2)}</Text>
-                                <Button title="Adicionar" onPress={() => setModalVisible(false)} color={"green"} />
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal >
-        </View >
+                            </TouchableWithoutFeedback>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal >
+            </View >
+        </TouchableOpacity>
     );
 }
 

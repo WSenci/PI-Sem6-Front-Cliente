@@ -14,10 +14,28 @@ interface IProduto {
   desc: string;
 }
 
+type ItemCardPropsComm = {
+    _id: string
+    nome: string
+    preco: number
+    tipo: string
+    desc: string
+    comment?: string
+}
+
+function chunkArray<T>(array: T[], size: number): T[][] {
+  const result: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+}
+
 export default function MenuScreen() {
   const [itens, setItens] = useState<IProduto[]>([]);
   const [loading, setLoading] = useState(true);
   const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null);
+  const [carrinho, setCarrinho] = useState<ItemCardPropsComm | null>(null)
 
   useEffect(() => {
     async function fetchCardapio() {
@@ -55,14 +73,14 @@ export default function MenuScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView horizontal>
-        <FlatList
-          data={itensFiltrados}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => <ItemCard item={item} />}
-          numColumns={2}
-          contentContainerStyle={styles.list}
-        />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        {chunkArray(itensFiltrados, 2).map((group, index) => (
+          <View key={index} style={styles.cardColumn}>
+            {group.map((item) => (
+              <ItemCard key={item._id} item={item} carrinho={carrinho} setCarrinho={setCarrinho}/>
+            ))}
+          </View>
+        ))}
       </ScrollView>
 
       <StatusBar style='light' />
@@ -99,4 +117,11 @@ const styles = StyleSheet.create({
     padding: 5,
     flexDirection: "row",
   },
+scrollContent: {
+  padding: 10,
+},
+cardColumn: {
+  flexDirection: "column",
+  marginRight: 16,
+},
 });

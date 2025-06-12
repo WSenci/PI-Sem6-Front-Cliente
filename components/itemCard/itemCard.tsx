@@ -1,38 +1,53 @@
-import { Double } from "mongodb";
-import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal, TextInput, Button, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { Double } from "mongodb"
+import React, { useEffect, useState } from "react"
+import { View, Text, Image, TouchableOpacity, Modal, TextInput, Button, StyleSheet, TouchableWithoutFeedback } from "react-native"
 
 type ItemCardProps = {
     item: {
-        _id: string;
-        img: string;
-        nome: string;
-        preco: number;
-        tipo: string;
-        desc: string;
-    };
-};
+        _id: string
+        img: string
+        nome: string
+        preco: number
+        tipo: string
+        desc: string
+    }
+    carrinho: ItemCardPropsComm
+    setCarrinho: React.Dispatch<React.SetStateAction<ItemCardPropsComm | null>>
+}
+
+type ItemCardPropsComm = {
+    _id: string
+    nome: string
+    preco: number
+    tipo: string
+    desc: string
+    comment?: string
+}
 
 function convertDriveLinkToDirect(url?: string): string {
-    if (!url) return '';
-    const match = url.match(/\/file\/d\/([^/]+)\//);
+    if (!url) return ''
+    const match = url.match(/\/file\/d\/([^/]+)\//)
     if (match && match[1]) {
-        return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        return `https://drive.google.com/uc?export=view&id=${match[1]}`
     }
-    return url;
+    return url
 }
 
 export default function ItemCard({ item }: ItemCardProps) {
 
-    const imageUrl = convertDriveLinkToDirect(item.img);
+    const imageUrl = convertDriveLinkToDirect(item.img)
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [observacao, setObservacao] = useState("");
+    const [modalVisible, setModalVisible] = useState(false)
+    const [observacao, setObservacao] = useState("")
+
+    function addItemToCart() {
+
+        setModalVisible(false)
+    }
 
     return (
         <TouchableOpacity onPress={() => { setModalVisible(true) }}>
             <View style={styles.card}>
-                {/* <TouchableOpacity onPress={() => { setModalVisible(true) }}> */}
                 {imageUrl ? (
                     <Image source={{ uri: imageUrl }} style={styles.image} />
                 ) : (
@@ -40,7 +55,6 @@ export default function ItemCard({ item }: ItemCardProps) {
                 )}
                 <Text style={styles.name}>{item.nome}</Text>
                 <Text style={styles.price}>R$ {item.preco.toFixed(2)}</Text>
-                {/* </TouchableOpacity> */}
 
                 <Modal visible={modalVisible} animationType="fade" transparent={true} >
                     <TouchableWithoutFeedback onPress={() => setModalVisible(false)} >
@@ -64,7 +78,7 @@ export default function ItemCard({ item }: ItemCardProps) {
                                         onChangeText={setObservacao}
                                     />
                                     <Text style={styles.modalPrice}>R$ {item.preco.toFixed(2)}</Text>
-                                    <Button title="Adicionar" onPress={() => setModalVisible(false)} color={"green"} />
+                                    <Button title="Adicionar" onPress={() => addItemToCart()} color={"green"} />
                                 </View>
                             </TouchableWithoutFeedback>
                         </View>
@@ -72,7 +86,7 @@ export default function ItemCard({ item }: ItemCardProps) {
                 </Modal >
             </View >
         </TouchableOpacity>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -141,4 +155,4 @@ const styles = StyleSheet.create({
         color: "green",
         marginBottom: 10,
     },
-});
+})

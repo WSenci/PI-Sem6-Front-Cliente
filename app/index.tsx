@@ -6,14 +6,14 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ScreenOrientation from "expo-screen-orientation";
 
 export default function App() {
-  useEffect(() => {
-    async function changeScreenOrientation() {
-      if (Platform.OS !== 'web') {
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-      }
-    }
-    changeScreenOrientation();
-  }, []);
+  // useEffect(() => {
+  //   async function changeScreenOrientation() {
+  //     if (Platform.OS !== 'web') {
+  //       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+  //     }
+  //   }
+  //   changeScreenOrientation();
+  // }, []);
   // ctrl + k c -> comentar
   // ctrl + k u -> descomentar
 

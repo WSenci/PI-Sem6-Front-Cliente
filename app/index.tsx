@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View, Platform, Modal, TextInput } from 'react-native';
-import { useCallback, useEffect, useState } from "react";
+import { Button, StyleSheet, Text, View, Platform, Modal, TextInput, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useState } from "react";
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ScreenOrientation from "expo-screen-orientation";
 import { useFocusEffect } from '@react-navigation/native';
@@ -23,6 +23,7 @@ export default function App() {
   const [perm, reqPerm] = useCameraPermissions()
   const { instance, setInstance } = useInstance()
   const [modalVisible, setModalVisible] = useState(false)
+  const [qrCodeVisible, setQrCodeVisible] = useState(false)
   const [numeroMesa, setNumeroMesa] = useState('')
 
   useFocusEffect(
@@ -33,8 +34,8 @@ export default function App() {
     }, [])
   )
 
-  function addMesa(){
-    setInstance({cod_mesa: numeroMesa, cod_comanda: null})
+  function addMesa() {
+    setInstance({ cod_mesa: numeroMesa, cod_comanda: null })
     setModalVisible(false)
   }
 
@@ -43,12 +44,13 @@ export default function App() {
   }, [])
 
   const handledQRCodeScanned = ({ data }: any) => {
-    if (modalVisible == false && instance!== null && data !== undefined) {
+    if (modalVisible == false && instance !== null && data !== undefined) {
       setScanned(true)
-      setInstance({cod_mesa: instance.cod_mesa, cod_comanda: data})
+      setInstance({ cod_mesa: instance.cod_mesa, cod_comanda: data })
       router.navigate("/cardapio")
       console.log(`${data}`)
     }
+    setQrCodeVisible(false)
   }
 
   if (!perm?.granted) {
@@ -61,32 +63,38 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Button
-        onPress={() => { router.navigate("/cardapio") }}
-        title="Cardapio"
-        color="#841584"
-      />
-
-      <View>
-        <CameraView style={styles.camera}
-          onBarcodeScanned={scanned ? undefined : handledQRCodeScanned}
-          barcodeScannerSettings={{
-            barcodeTypes: ['qr'],
-          }}
-          facing='front'
-        />
-        {
-          scanned && (
-            <Text style={styles.rescan} onPress={() => setScanned(false)}>
-              Toque para escanear novamente.
-            </Text>
-          )
-        }
-      </View>
-
+      {!qrCodeVisible ?
+        (
+          <TouchableOpacity onPress={() => setQrCodeVisible(true)} style={styles.lerComanda}>
+            <Text style={{ color: "#fff" }}>Ler comanda</Text>
+          </TouchableOpacity>
+        )
+        :
+        (
+          <View>
+            <CameraView style={styles.camera}
+              onBarcodeScanned={scanned ? undefined : handledQRCodeScanned}
+              barcodeScannerSettings={{
+                barcodeTypes: ['qr'],
+              }}
+              facing='front'
+            />
+            {
+              scanned && (
+                <Text style={styles.rescan} onPress={() => setScanned(false)}>
+                  Toque para escanear novamente.
+                </Text>
+              )
+            }
+            <TouchableOpacity onPress={() => setQrCodeVisible(false)} style={[styles.lerComanda, {backgroundColor: 'red'}]}>
+            <Text style={{ color: "#fff" }}>Cancelar</Text>
+          </TouchableOpacity>
+          </View>
+        )
+      }
       <Modal visible={modalVisible} animationType="fade" transparent={false} >
         <View style={styles.modalContainer} >
-          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 30}}>Digite o número da mesa</Text>
+          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 30 }}>Digite o número da mesa</Text>
           <TextInput
             keyboardType="number-pad"
             style={styles.input}
@@ -142,5 +150,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 6,
-},
+  },
+  lerComanda: {
+    width: 200,
+    marginTop: 20,
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    alignSelf: "center",
+  },
 });

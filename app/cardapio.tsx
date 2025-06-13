@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, Text, ScrollView, TouchableWithoutFeedback, Button } from "react-native";
-import api from "../helpers/axios";
-import ItemCard from "../components/itemCard/itemCard";
-import { StatusBar } from 'expo-status-bar';
-import { router } from "expo-router";
-import { useInstance } from "../helpers/instanceContext";
+import React, { useEffect, useState } from "react"
+import { View, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, Text, ScrollView, TouchableWithoutFeedback, Button } from "react-native"
+import api from "../helpers/axios"
+import ItemCard from "../components/itemCard/itemCard"
+import { StatusBar } from 'expo-status-bar'
+import { router } from "expo-router"
+import { useInstance } from "../helpers/instanceContext"
 
 interface IProduto {
-  _id: string;
-  img: string;
-  nome: string;
-  preco: number;
-  tipo: string;
-  desc: string;
+  _id: string
+  img: string
+  nome: string
+  preco: number
+  tipo: string
+  desc: string
 }
 
 export interface ItemCardPropsComm {
@@ -25,47 +25,82 @@ export interface ItemCardPropsComm {
 }
 
 function chunkArray<T>(array: T[], size: number): T[][] {
-  const result: T[][] = [];
+  const result: T[][] = []
   for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
+    result.push(array.slice(i, i + size))
   }
-  return result;
+  return result
 }
 
 export default function MenuScreen() {
-  const [itens, setItens] = useState<IProduto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null);
+  const [itens, setItens] = useState<IProduto[]>([])
+  const [loading, setLoading] = useState(true)
+  const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null)
   const [pedidoCarrinho, setPedidoCarrinho] = useState<ItemCardPropsComm[] | null>(null)
   const [modalCarrinhoVisivel, setModalCarrinhoVisivel] = useState(false)
+  const [btPressed, setBtPressed] = useState(false)
   const { instance } = useInstance()
 
   useEffect(() => {
     async function fetchCardapio() {
       try {
-        const response = await api.get("/product");
-        setItens(response.data);
+        const response = await api.get("/product")
+        setItens(response.data)
       } catch (error) {
-        console.error("Erro ao buscar cardápio:", error);
+        console.error("Erro ao buscar cardápio:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    fetchCardapio();
-  }, []);
+    fetchCardapio()
+  }, [])
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color="#0000ff" />
   }
 
   const itensFiltrados = tipoSelecionado
     ? itens.filter((item) => item.tipo === tipoSelecionado)
-    : itens;
+    : itens
 
-  function createOrder() {
+  async function createOrder() {
+    if (!pedidoCarrinho || pedidoCarrinho.length === 0) {
+      alert("Pedido vazio!")
+      return
+    }
+    if (instance === null) {
+      alert('Autenticação não encontrada!')
+      return
+    }
+    const total = pedidoCarrinho.reduce((sum, item) => sum + item.preco, 0)
+    const dataAtual = new Date().toISOString()
+    const pedido = {
+      cod_mesa: instance.cod_mesa,
+      cod_comanda: instance.cod_comanda,
+      produtos: pedidoCarrinho,
+      data_pedido: dataAtual,
+      entregue: false,
+      pago: false,
+      total: parseFloat(total.toFixed(2)),
+    }
 
-    console.log(pedidoCarrinho)
+    //console.log("Pedido formatado:", pedido)
+    if (btPressed) return
+    setBtPressed(true)
+    try {
+      await api.post("/order", pedido)
+
+      setModalCarrinhoVisivel(false)
+      setPedidoCarrinho(null)
+      alert("Pedido enviado para a cozinha!")
+      router.navigate("/")
+    } catch (e) {
+      console.log('Erro: ' + e)
+    } finally {
+      setBtPressed(false)
+    }
+
   }
 
   return (
@@ -78,9 +113,6 @@ export default function MenuScreen() {
         ))}
         <TouchableOpacity onPress={() => { router.navigate("/chatbot") }} style={styles.filterButton}>
           <Text style={styles.filterText}>Tempo de preparo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { console.log(instance) }} style={styles.filterButton}>
-          <Text style={styles.filterText}>Teste</Text>
         </TouchableOpacity>
       </View>
 
@@ -103,17 +135,27 @@ export default function MenuScreen() {
                   <Button title=" X " onPress={() => setModalCarrinhoVisivel(false)} color="red" />
                 </View>
                 <Text style={styles.modalTitulo}>Pedido</Text>
-                {pedidoCarrinho === null ? (
+
+                {pedidoCarrinho === null || pedidoCarrinho.length === 0 ? (
                   <Text>Pedido vazio</Text>
                 ) : (
                   pedidoCarrinho.map((item, index) => (
-                    <Text key={index}>
-                      {item.nome} - R$ {item.preco.toFixed(2)}
-                    </Text>
+                    <View key={index} style={styles.itemCarrinho}>
+                      <Text style={styles.itemCarrinhoTexto}>
+                        {item.nome} - R$ {item.preco.toFixed(2)}
+                      </Text>
+                      <TouchableOpacity onPress={() => {
+                        setPedidoCarrinho((prev) =>
+                          prev ? prev.filter((_, i) => i !== index) : prev
+                        )
+                      }}>
+                        <Text style={styles.botaoRemover}>🗑️</Text>
+                      </TouchableOpacity>
+                    </View>
                   ))
                 )}
 
-                <TouchableOpacity onPress={() => {createOrder()}} style={styles.fecharBtn}>
+                <TouchableOpacity onPress={createOrder} style={styles.fazerPedidoBtn}>
                   <Text style={{ color: "#fff" }}>Finalizar pedido</Text>
                 </TouchableOpacity>
               </View>
@@ -131,7 +173,7 @@ export default function MenuScreen() {
 
       <StatusBar style='light' />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -210,11 +252,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  fecharBtn: {
+  fazerPedidoBtn: {
+    width: 200,
     marginTop: 20,
-    backgroundColor: '#333',
+    backgroundColor: 'green',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    alignSelf: "center",
   },
-});
+  itemCarrinho: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    paddingBottom: 4,
+  },
+
+  itemCarrinhoTexto: {
+    flex: 1,
+    fontSize: 16,
+  },
+
+  botaoRemover: {
+    fontSize: 18,
+    color: 'red',
+    marginLeft: 10,
+  },
+})

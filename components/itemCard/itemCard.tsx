@@ -1,6 +1,7 @@
 import { Double } from "mongodb"
 import React, { useEffect, useState } from "react"
 import { View, Text, Image, TouchableOpacity, Modal, TextInput, Button, StyleSheet, TouchableWithoutFeedback } from "react-native"
+import { ItemCardPropsComm } from '../../app/cardapio'
 
 type ItemCardProps = {
     item: {
@@ -11,18 +12,18 @@ type ItemCardProps = {
         tipo: string
         desc: string
     }
-    carrinho: ItemCardPropsComm
-    setCarrinho: React.Dispatch<React.SetStateAction<ItemCardPropsComm | null>>
+    pedidoCarrinho: ItemCardPropsComm[] | null
+    setPedidoCarrinho: React.Dispatch<React.SetStateAction<ItemCardPropsComm[] | null>>
 }
 
-type ItemCardPropsComm = {
-    _id: string
-    nome: string
-    preco: number
-    tipo: string
-    desc: string
-    comment?: string
-}
+// type ItemCardPropsComm = {
+//     _id: string
+//     nome: string
+//     preco: number
+//     tipo: string
+//     desc: string
+//     comment?: string
+// }
 
 function convertDriveLinkToDirect(url?: string): string {
     if (!url) return ''
@@ -33,7 +34,7 @@ function convertDriveLinkToDirect(url?: string): string {
     return url
 }
 
-export default function ItemCard({ item }: ItemCardProps) {
+export default function ItemCard({ item, pedidoCarrinho, setPedidoCarrinho }: ItemCardProps) {
 
     const imageUrl = convertDriveLinkToDirect(item.img)
 
@@ -42,6 +43,28 @@ export default function ItemCard({ item }: ItemCardProps) {
 
     function addItemToCart() {
 
+        let novoItem
+        if (observacao !== '') {
+            novoItem = {
+                _id: item._id,
+                nome: item.nome,
+                preco: item.preco,
+                tipo: item.tipo,
+                desc: item.desc,
+                comment: observacao
+            }
+        }
+        else {
+            novoItem = {
+                _id: item._id,
+                nome: item.nome,
+                preco: item.preco,
+                tipo: item.tipo,
+                desc: item.desc
+            }
+        }
+        setPedidoCarrinho(pedidoCarrinho !== null ? [...pedidoCarrinho, novoItem] : [novoItem]
+        )
         setModalVisible(false)
     }
 

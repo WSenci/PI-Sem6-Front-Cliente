@@ -2,6 +2,7 @@ import { Slot } from "expo-router";
 import { useEffect } from "react";
 import { Platform } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { InstanceProvider } from "../helpers/instanceContext";
 
 export default function Layout() {
     useEffect(() => {
@@ -13,8 +14,8 @@ export default function Layout() {
     changeScreenOrientation();
   }, []);
     return (
-        <>
+        <InstanceProvider>
             <Slot />
-        </>
+        </InstanceProvider>
     )
 }

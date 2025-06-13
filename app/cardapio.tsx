@@ -76,8 +76,8 @@ export default function MenuScreen() {
     const total = pedidoCarrinho.reduce((sum, item) => sum + item.preco, 0)
     const dataAtual = new Date().toISOString()
     const pedido = {
-      cod_mesa: instance.cod_mesa,
-      cod_comanda: instance.cod_comanda,
+      cod_mesa: Number(instance.cod_mesa),
+      cod_comanda: Number(instance.cod_comanda),
       produtos: pedidoCarrinho,
       data_pedido: dataAtual,
       entregue: false,

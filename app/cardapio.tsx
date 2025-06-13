@@ -4,6 +4,7 @@ import api from "../helpers/axios";
 import ItemCard from "../components/itemCard/itemCard";
 import { StatusBar } from 'expo-status-bar';
 import { router } from "expo-router";
+import { useInstance } from "../helpers/instanceContext";
 
 interface IProduto {
   _id: string;
@@ -37,6 +38,7 @@ export default function MenuScreen() {
   const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null);
   const [pedidoCarrinho, setPedidoCarrinho] = useState<ItemCardPropsComm[] | null>(null)
   const [modalCarrinhoVisivel, setModalCarrinhoVisivel] = useState(false)
+  const { instance } = useInstance()
 
   useEffect(() => {
     async function fetchCardapio() {
@@ -76,6 +78,9 @@ export default function MenuScreen() {
         ))}
         <TouchableOpacity onPress={() => { router.navigate("/chatbot") }} style={styles.filterButton}>
           <Text style={styles.filterText}>Tempo de preparo</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => { console.log(instance) }} style={styles.filterButton}>
+          <Text style={styles.filterText}>Teste</Text>
         </TouchableOpacity>
       </View>
 

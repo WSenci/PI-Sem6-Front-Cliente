@@ -43,8 +43,9 @@ export default function App() {
   }, [])
 
   const handledQRCodeScanned = ({ data }: any) => {
-    if (modalVisible == false) {
+    if (modalVisible == false && instance!== null && data !== undefined) {
       setScanned(true)
+      setInstance({cod_mesa: instance.cod_mesa, cod_comanda: data})
       router.navigate("/cardapio")
       console.log(`${data}`)
     }
@@ -63,11 +64,6 @@ export default function App() {
       <Button
         onPress={() => { router.navigate("/cardapio") }}
         title="Cardapio"
-        color="#841584"
-      />
-      <Button
-        onPress={() => { router.navigate("/carrinho") }}
-        title="Carrinho"
         color="#841584"
       />
 
@@ -98,7 +94,7 @@ export default function App() {
             value={numeroMesa}
             onChangeText={setNumeroMesa}
           />
-          <Button title="ADD MESA" onPress={() => setModalVisible(false)} color="green" />
+          <Button title="ADD MESA" onPress={() => addMesa()} color="green" />
         </View>
       </Modal>
 
